@@ -1,14 +1,18 @@
-import { buildApp } from "./app.js";
+import Fastify from "fastify";
+import cors from "@fastify/cors";
 
-const PORT = process.env["PORT"] ?? 3001;
+export async function buildApp() {
+  const app = Fastify({
+    logger: true,
+  });
 
-async function main() {
-  const app = await buildApp();
+  await app.register(cors, {
+    origin: true,
+  });
 
-  await app.listen({ port: Number(PORT), host: "0.0.0.0" });
+  app.get("/api/health", async () => {
+    return { status: "ok" };
+  });
+
+  return app;
 }
-
-main().catch((err) => {
-  console.error("Failed to start server:", err);
-  process.exit(1);
-});
