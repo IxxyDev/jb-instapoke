@@ -69,7 +69,7 @@ export class PokemonStore {
   getTags(): TagsResponse {
     const types: TagInfo[] = [...this.byType.entries()]
       .map(([name, ids]) => ({ name, count: ids.size }))
-      .toSorted((a, b) => b.count - a.count);
+      .sort((a, b) => b.count - a.count);
 
     const generations: TagInfo[] = [...this.byGeneration.entries()]
       .map(([gen, ids]) => ({
@@ -77,7 +77,7 @@ export class PokemonStore {
         label: `Gen ${gen}`,
         count: ids.size,
       }))
-      .toSorted((a, b) => Number(a.name) - Number(b.name));
+      .sort((a, b) => Number(a.name) - Number(b.name));
 
     return { types, generations };
   }
