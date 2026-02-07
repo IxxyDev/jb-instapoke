@@ -1,13 +1,20 @@
 import type { FastifyInstance } from "fastify";
 import type { PokemonStore } from "../store/pokemon-store.js";
+import { NotFoundError, ValidationError } from "../errors.js";
 
 export function pokemonRoutes(app: FastifyInstance, store: PokemonStore) {
-  app.get("/api/pokemon/:id", async (request, reply) => {
+  app.get("/api/pokemon/:id", async (request) => {
     const { id } = request.params as { id: string };
-    const pokemon = store.getById(Number(id));
+    const numId = Number(id);
+
+    if (!Number.isFinite(numId) || !Number.isInteger(numId) || numId < 1) {
+      throw new ValidationError("id must be a positive integer");
+    }
+
+    const pokemon = store.getById(numId);
 
     if (!pokemon) {
-      return reply.status(404).send({ error: "Pokemon not found" });
+      throw new NotFoundError("Pokemon not found");
     }
 
     return pokemon;

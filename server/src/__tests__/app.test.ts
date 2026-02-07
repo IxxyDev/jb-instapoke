@@ -182,5 +182,65 @@ describe("API routes", () => {
     });
 
     expect(response.statusCode).toEqual(404);
+    expect(response.json()).toEqual({ error: "Pokemon not found" });
+  });
+});
+
+describe("validation", () => {
+  it("GET /api/feed?limit=abc should return 400", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/feed?limit=abc",
+    });
+
+    expect(response.statusCode).toEqual(400);
+    expect(response.json().error).toEqual("limit must be an integer");
+  });
+
+  it("GET /api/feed?limit=1.5 should return 400", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/feed?limit=1.5",
+    });
+
+    expect(response.statusCode).toEqual(400);
+  });
+
+  it("GET /api/feed?generation=abc should return 400", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/feed?generation=abc",
+    });
+
+    expect(response.statusCode).toEqual(400);
+  });
+
+  it("GET /api/pokemon/abc should return 400", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/pokemon/abc",
+    });
+
+    expect(response.statusCode).toEqual(400);
+    expect(response.json().error).toEqual("id must be a positive integer");
+  });
+
+  it("GET /api/pokemon/-1 should return 400", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/pokemon/-1",
+    });
+
+    expect(response.statusCode).toEqual(400);
   });
 });
