@@ -37,7 +37,7 @@ describe("buildApp", () => {
       url: "/api/health",
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toEqual(200);
     expect(response.json()).toEqual({ status: "ok" });
   });
 
@@ -53,7 +53,7 @@ describe("buildApp", () => {
       },
     });
 
-    expect(response.headers["access-control-allow-origin"]).toBe(
+    expect(response.headers["access-control-allow-origin"]).toEqual(
       "http://localhost:5173",
     );
   });

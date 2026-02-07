@@ -9,19 +9,19 @@ import { SPRITE_BASE_URL } from "@instapoke/shared";
 
 describe("parseGeneration", () => {
   it("should parse all 9 generations", () => {
-    expect(parseGeneration("generation-i")).toBe(1);
-    expect(parseGeneration("generation-v")).toBe(5);
-    expect(parseGeneration("generation-ix")).toBe(9);
+    expect(parseGeneration("generation-i")).toEqual(1);
+    expect(parseGeneration("generation-v")).toEqual(5);
+    expect(parseGeneration("generation-ix")).toEqual(9);
   });
 
   it("should return 0 for invalid input", () => {
-    expect(parseGeneration("")).toBe(0);
-    expect(parseGeneration("something-else")).toBe(0);
-    expect(parseGeneration("generation-")).toBe(0);
+    expect(parseGeneration("")).toEqual(0);
+    expect(parseGeneration("something-else")).toEqual(0);
+    expect(parseGeneration("generation-")).toEqual(0);
   });
 
   it("should return 0 for unknown roman numeral", () => {
-    expect(parseGeneration("generation-xxx")).toBe(0);
+    expect(parseGeneration("generation-xxx")).toEqual(0);
   });
 });
 
@@ -49,35 +49,35 @@ describe("parseStats", () => {
   it("should default to 0 for missing stats", () => {
     const result = parseStats([]);
 
-    expect(result.hp).toBe(0);
-    expect(result.attack).toBe(0);
-    expect(result.speed).toBe(0);
+    expect(result.hp).toEqual(0);
+    expect(result.attack).toEqual(0);
+    expect(result.speed).toEqual(0);
   });
 
   it("should handle partial stats", () => {
     const input = [{ stat: { name: "hp" }, base_stat: 100 }];
 
     const result = parseStats(input);
-    expect(result.hp).toBe(100);
-    expect(result.attack).toBe(0);
+    expect(result.hp).toEqual(100);
+    expect(result.attack).toEqual(0);
   });
 });
 
 describe("capitalize", () => {
   it("should capitalize first letter", () => {
-    expect(capitalize("pikachu")).toBe("Pikachu");
+    expect(capitalize("pikachu")).toEqual("Pikachu");
   });
 
   it("should handle single character", () => {
-    expect(capitalize("a")).toBe("A");
+    expect(capitalize("a")).toEqual("A");
   });
 
   it("should handle empty string", () => {
-    expect(capitalize("")).toBe("");
+    expect(capitalize("")).toEqual("");
   });
 
   it("should keep already capitalized", () => {
-    expect(capitalize("Pikachu")).toBe("Pikachu");
+    expect(capitalize("Pikachu")).toEqual("Pikachu");
   });
 });
 
@@ -160,7 +160,7 @@ describe("transformPokemon", () => {
       genera: [{ genus: "ねずみポケモン", language: { name: "ja" } }],
     };
 
-    expect(transformPokemon(25, pokemonData, noEnglish).genus).toBe("");
+    expect(transformPokemon(25, pokemonData, noEnglish).genus).toEqual("");
   });
 
   it("should handle missing English description", () => {
@@ -169,9 +169,9 @@ describe("transformPokemon", () => {
       flavor_text_entries: [],
     };
 
-    expect(transformPokemon(25, pokemonData, noDescription).description).toBe(
-      "",
-    );
+    expect(
+      transformPokemon(25, pokemonData, noDescription).description,
+    ).toEqual("");
   });
 
   it("should fallback to capitalized name if English name missing", () => {
@@ -180,9 +180,9 @@ describe("transformPokemon", () => {
       names: [{ name: "ピカチュウ", language: { name: "ja" } }],
     };
 
-    expect(transformPokemon(25, pokemonData, noEnglishName).displayName).toBe(
-      "Pikachu",
-    );
+    expect(
+      transformPokemon(25, pokemonData, noEnglishName).displayName,
+    ).toEqual("Pikachu");
   });
 
   it("should handle dual-type Pokemon", () => {

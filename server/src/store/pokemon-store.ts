@@ -35,9 +35,11 @@ export class PokemonStore {
       PAGE_SIZE_MAX,
     );
     const matchingIds = this.getMatchingIds(query);
-    const startIndex = query.cursor
-      ? this.items.findIndex((p) => p.id === Number(query.cursor)) + 1
-      : 0;
+    const cursorIndex = query.cursor
+      ? this.items.findIndex((p) => p.id === Number(query.cursor))
+      : -1;
+    const startIndex =
+      query.cursor && cursorIndex === -1 ? this.items.length : cursorIndex + 1;
 
     const results: Pokemon[] = [];
 
@@ -115,17 +117,21 @@ export class PokemonStore {
     const sets: Set<number>[] = [];
 
     if (query.tags?.length) {
+      const union = new Set<number>();
       for (const tag of query.tags) {
         const ids = this.byType.get(tag);
-        if (ids) sets.push(ids);
+        if (ids) ids.forEach((id) => union.add(id));
       }
+      sets.push(union);
     }
 
     if (query.generation?.length) {
+      const union = new Set<number>();
       for (const gen of query.generation) {
         const ids = this.byGeneration.get(gen);
-        if (ids) sets.push(ids);
+        if (ids) ids.forEach((id) => union.add(id));
       }
+      sets.push(union);
     }
 
     if (query.q) {
