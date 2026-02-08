@@ -1,0 +1,27 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  color: var(--chip-color);
+  background: transparent;
+  border: 1px solid var(--chip-color);
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: color-mix(in srgb, var(--chip-color) 10%, transparent);
+}
+
+.active {
+  background: var(--chip-color);
+  color: white;
+}
+
+.active:hover {
+  background: color-mix(in srgb, var(--chip-color) 85%, black);
+}
