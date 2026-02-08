@@ -38,8 +38,21 @@ export class PokemonStore {
   getFeed(query: FeedQuery): PaginatedResponse<Pokemon> {
     const limit = Math.min(query.limit ?? PAGE_SIZE_DEFAULT, PAGE_SIZE_MAX);
     const matchingIds = this.getMatchingIds(query);
+    const direction = query.direction ?? "forward";
 
-    const startIndex = this.resolveCursor(query.cursor);
+    if (direction === "backward") {
+      return this.getFeedBackward(query.cursor, limit, matchingIds);
+    }
+
+    return this.getFeedForward(query.cursor, limit, matchingIds);
+  }
+
+  private getFeedForward(
+    cursor: string | undefined,
+    limit: number,
+    matchingIds: Set<number> | null,
+  ): PaginatedResponse<Pokemon> {
+    const startIndex = this.resolveCursorForward(cursor);
 
     const results: Pokemon[] = [];
     let hasMore = false;
@@ -56,13 +69,55 @@ export class PokemonStore {
       }
     }
 
+    const hasPrevious = this.hasMatchingBefore(startIndex, matchingIds);
     const lastItem = results.at(-1);
+    const firstItem = results[0];
+    const nextCursor = hasMore && lastItem ? String(lastItem.id) : null;
+    const previousCursor =
+      hasPrevious && firstItem ? String(firstItem.id) : null;
+    const total = matchingIds ? matchingIds.size : this.items.length;
+
+    return {
+      data: results,
+      pagination: { nextCursor, previousCursor, hasMore, hasPrevious, total },
+    };
+  }
+
+  private getFeedBackward(
+    cursor: string | undefined,
+    limit: number,
+    matchingIds: Set<number> | null,
+  ): PaginatedResponse<Pokemon> {
+    const endIndex = this.resolveCursorBackward(cursor);
+
+    const results: Pokemon[] = [];
+    let hasPrevious = false;
+
+    for (let i = endIndex; i >= 0; i--) {
+      const pokemon = this.items[i]!;
+      if (!matchingIds || matchingIds.has(pokemon.id)) {
+        if (results.length < limit) {
+          results.push(pokemon);
+        } else {
+          hasPrevious = true;
+          break;
+        }
+      }
+    }
+
+    results.reverse();
+
+    const hasMore = this.hasMatchingAfterInclusive(endIndex + 1, matchingIds);
+    const firstItem = results[0];
+    const lastItem = results.at(-1);
+    const previousCursor =
+      hasPrevious && firstItem ? String(firstItem.id) : null;
     const nextCursor = hasMore && lastItem ? String(lastItem.id) : null;
     const total = matchingIds ? matchingIds.size : this.items.length;
 
     return {
       data: results,
-      pagination: { nextCursor, hasMore, total },
+      pagination: { nextCursor, previousCursor, hasMore, hasPrevious, total },
     };
   }
 
@@ -70,11 +125,40 @@ export class PokemonStore {
     return this.cachedTags;
   }
 
-  private resolveCursor(cursor: string | undefined): number {
+  private resolveCursorForward(cursor: string | undefined): number {
     if (!cursor) return 0;
     const index = this.idToIndex.get(Number(cursor));
     if (index === undefined) return this.items.length;
     return index + 1;
+  }
+
+  private resolveCursorBackward(cursor: string | undefined): number {
+    if (!cursor) return this.items.length - 1;
+    const index = this.idToIndex.get(Number(cursor));
+    if (index === undefined) return -1;
+    return index - 1;
+  }
+
+  private hasMatchingBefore(
+    index: number,
+    matchingIds: Set<number> | null,
+  ): boolean {
+    for (let i = index - 1; i >= 0; i--) {
+      const pokemon = this.items[i]!;
+      if (!matchingIds || matchingIds.has(pokemon.id)) return true;
+    }
+    return false;
+  }
+
+  private hasMatchingAfterInclusive(
+    index: number,
+    matchingIds: Set<number> | null,
+  ): boolean {
+    for (let i = index; i < this.items.length; i++) {
+      const pokemon = this.items[i]!;
+      if (!matchingIds || matchingIds.has(pokemon.id)) return true;
+    }
+    return false;
   }
 
   private computeTags(): TagsResponse {

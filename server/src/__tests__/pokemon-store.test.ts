@@ -203,6 +203,87 @@ describe("getFeed filtering", () => {
   });
 });
 
+describe("getFeed backward pagination", () => {
+  it("should return the same items as the first forward page", () => {
+    const forwardPage = store.getFeed({ limit: 3 });
+    const lastId = forwardPage.data.at(-1)!.id;
+
+    const page2 = store.getFeed({ limit: 3, cursor: String(lastId) });
+    const firstOfPage2 = page2.data[0]!;
+
+    const backwardPage = store.getFeed({
+      limit: 3,
+      cursor: String(firstOfPage2.id),
+      direction: "backward",
+    });
+
+    expect(backwardPage.data.length).toEqual(3);
+    const backwardIds = backwardPage.data.map((p) => p.id);
+    const forwardIds = forwardPage.data.map((p) => p.id);
+    expect(backwardIds).toEqual(forwardIds);
+  });
+
+  it("should indicate no earlier items when reading from the end", () => {
+    const result = store.getFeed({ direction: "backward" });
+
+    expect(result.pagination.hasPrevious).toEqual(false);
+  });
+
+  it("should indicate earlier items exist on the second page", () => {
+    const page1 = store.getFeed({ limit: 3 });
+    expect(page1.pagination.hasPrevious).toEqual(false);
+
+    const page2 = store.getFeed({
+      limit: 3,
+      cursor: page1.pagination.nextCursor!,
+    });
+    expect(page2.pagination.hasPrevious).toEqual(true);
+  });
+
+  it("should return correct filtered results when going backward", () => {
+    const allGrass = store.getFeed({ tags: ["grass"] });
+    expect(allGrass.data.length).toEqual(3);
+
+    const page1 = store.getFeed({ tags: ["grass"], limit: 1 });
+    const page2 = store.getFeed({
+      tags: ["grass"],
+      limit: 1,
+      cursor: page1.pagination.nextCursor!,
+    });
+
+    const backward = store.getFeed({
+      tags: ["grass"],
+      limit: 1,
+      cursor: String(page2.data[0]!.id),
+      direction: "backward",
+    });
+
+    expect(backward.data.length).toEqual(1);
+    expect(backward.data[0]!.id).toEqual(page1.data[0]!.id);
+  });
+
+  it("should return empty results for a non-existent position", () => {
+    const result = store.getFeed({
+      cursor: "999999",
+      direction: "backward",
+    });
+
+    expect(result.data).toEqual([]);
+    expect(result.pagination.hasPrevious).toEqual(false);
+  });
+
+  it("should allow navigating back only from the second page onward", () => {
+    const page1 = store.getFeed({ limit: 3 });
+    expect(page1.pagination.previousCursor).toBeNull();
+
+    const page2 = store.getFeed({
+      limit: 3,
+      cursor: page1.pagination.nextCursor!,
+    });
+    expect(page2.pagination.previousCursor).not.toBeNull();
+  });
+});
+
 describe("getTags", () => {
   it("should return all types with counts", () => {
     const tags = store.getTags();

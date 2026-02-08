@@ -27,13 +27,16 @@ export interface PaginatedResponse<T> {
   data: T[];
   pagination: {
     nextCursor: string | null;
+    previousCursor: string | null;
     hasMore: boolean;
+    hasPrevious: boolean;
     total: number;
   };
 }
 
 export interface FeedQuery {
   cursor?: string;
+  direction?: "forward" | "backward";
   limit?: number;
   tags?: string[];
   generation?: number[];

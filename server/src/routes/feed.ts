@@ -10,12 +10,13 @@ export function feedRoutes(app: FastifyInstance, store: PokemonStore) {
     const raw = request.query as Record<string, unknown>;
 
     const cursor = asString(raw["cursor"]);
+    const direction = parseDirection(asString(raw["direction"]));
     const limit = parseLimit(asString(raw["limit"]));
     const tags = parseTags(asString(raw["tags"]));
     const generation = parseGeneration(asString(raw["generation"]));
     const q = parseQuery(asString(raw["q"]));
 
-    return store.getFeed({ cursor, limit, tags, generation, q });
+    return store.getFeed({ cursor, direction, limit, tags, generation, q });
   });
 }
 
@@ -60,6 +61,16 @@ function parseGeneration(raw: string | undefined): number[] | undefined {
     return n;
   });
   return nums.length > 0 ? nums : undefined;
+}
+
+function parseDirection(
+  raw: string | undefined,
+): "forward" | "backward" | undefined {
+  if (!raw) return undefined;
+  if (raw !== "forward" && raw !== "backward") {
+    throw new ValidationError("direction must be 'forward' or 'backward'");
+  }
+  return raw;
 }
 
 function parseQuery(raw: string | undefined): string | undefined {
