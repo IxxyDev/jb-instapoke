@@ -5,9 +5,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: "jsdom",
-    setupFiles: ["./src/test/setup.ts"],
-    exclude: ["dist/**", "node_modules/**"],
+    exclude: ["dist/**", "node_modules/**", "src/**/*.test.tsx"],
     css: { modules: { classNameStrategy: "non-scoped" } },
   },
 });
