@@ -1,0 +1,29 @@
+.container {
+  max-width: var(--feed-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-bg);
+  padding-bottom: var(--spacing-md);
+}
+
+.count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-sm);
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.sentinel {
+  height: 1px;
+}
