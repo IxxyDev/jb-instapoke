@@ -1,44 +1,16 @@
-import type { Pokemon } from "@instapoke/shared";
 import type { FastifyInstance } from "fastify";
 import { PokemonStore } from "../store/pokemon-store.js";
 import { buildApp } from "../app.js";
+import { makePokemon } from "./helpers.js";
 
-function makePokemon(overrides: Partial<Pokemon> & { id: number }): Pokemon {
-  return {
-    name: `pokemon-${overrides.id}`,
-    displayName: `Pokemon ${overrides.id}`,
-    spriteUrl: `https://example.com/${overrides.id}.png`,
-    types: ["normal"],
-    abilities: [],
-    generation: 1,
-    genus: "",
-    description: "",
-    stats: {
-      hp: 0,
-      attack: 0,
-      defense: 0,
-      specialAttack: 0,
-      specialDefense: 0,
-      speed: 0,
-    },
-    color: "white",
-    height: 0,
-    weight: 0,
-    ...overrides,
-  };
-}
-
-const testData: Pokemon[] = [
+const testData = [
   makePokemon({ id: 1, name: "bulbasaur", types: ["grass", "poison"] }),
   makePokemon({ id: 4, name: "charmander", types: ["fire"] }),
   makePokemon({ id: 7, name: "squirtle", types: ["water"] }),
 ];
 
 function createStore() {
-  vi.spyOn(Math, "random").mockReturnValue(0.5);
-  const store = new PokemonStore(testData);
-  vi.restoreAllMocks();
-  return store;
+  return new PokemonStore(testData, { seed: 42 });
 }
 
 let apps: FastifyInstance[] = [];
@@ -147,6 +119,19 @@ describe("API routes", () => {
     expect(body.data[0].name).toEqual("squirtle");
   });
 
+  it("GET /api/feed should handle repeated tags param", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/feed?tags=fire&tags=water",
+    });
+
+    expect(response.statusCode).toEqual(200);
+    const body = response.json();
+    expect(body.data.length).toEqual(2);
+  });
+
   it("GET /api/tags should return types and generations", async () => {
     const app = await createApp();
 
@@ -208,6 +193,30 @@ describe("validation", () => {
     });
 
     expect(response.statusCode).toEqual(400);
+  });
+
+  it("GET /api/feed?limit=-5 should return 400", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/feed?limit=-5",
+    });
+
+    expect(response.statusCode).toEqual(400);
+    expect(response.json().error).toEqual("limit must be at least 1");
+  });
+
+  it("GET /api/feed?limit= (empty) should use default", async () => {
+    const app = await createApp();
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/feed?limit=",
+    });
+
+    expect(response.statusCode).toEqual(200);
+    expect(response.json().data.length).toEqual(3);
   });
 
   it("GET /api/feed?generation=abc should return 400", async () => {

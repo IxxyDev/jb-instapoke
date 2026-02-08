@@ -1,11 +1,12 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 
-import { feedRoutes } from "./routes/feed";
-import { tagsRoutes } from "./routes/tags";
-import { pokemonRoutes } from "./routes/pokemon";
-import { PokemonStore, loadStore } from "./store/pokemon-store";
-import { AppError } from "./errors";
+import { feedRoutes } from "./routes/feed.js";
+import { tagsRoutes } from "./routes/tags.js";
+import { pokemonRoutes } from "./routes/pokemon.js";
+import type { PokemonStore } from "./store/pokemon-store.js";
+import { loadStore } from "./store/pokemon-store.js";
+import { AppError } from "./errors.js";
 
 export interface AppOptions {
   store?: PokemonStore;
@@ -21,13 +22,23 @@ export async function buildApp(options: AppOptions = {}) {
     origin: true,
   });
 
-  app.setErrorHandler((error, _request, reply) => {
+  app.setErrorHandler((error: unknown, _request, reply) => {
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send({ error: error.message });
     }
 
-    const statusCode = error.statusCode ?? 500;
-    const message = statusCode >= 500 ? "Internal server error" : error.message;
+    let statusCode = 500;
+    let message = "Internal server error";
+
+    if (error instanceof Error) {
+      if ("statusCode" in error && typeof error.statusCode === "number") {
+        statusCode = error.statusCode;
+      }
+      if (statusCode < 500) {
+        message = error.message;
+      }
+    }
+
     return reply.status(statusCode).send({ error: message });
   });
 

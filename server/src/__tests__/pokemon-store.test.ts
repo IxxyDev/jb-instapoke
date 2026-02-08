@@ -1,32 +1,6 @@
 import type { Pokemon } from "@instapoke/shared";
 import { PokemonStore } from "../store/pokemon-store.js";
-
-function makePokemon(overrides: Partial<Pokemon> & { id: number }): Pokemon {
-  return {
-    name: `pokemon-${overrides.id}`,
-    displayName: `Pokemon ${overrides.id}`,
-    spriteUrl: `https://example.com/${overrides.id}.png`,
-    types: ["normal"],
-    abilities: [],
-    generation: 1,
-    genus: "",
-    description: "",
-    stats: {
-      hp: 0,
-      attack: 0,
-      defense: 0,
-      specialAttack: 0,
-      specialDefense: 0,
-      speed: 0,
-    },
-    color: "white",
-    height: 0,
-    weight: 0,
-    ...overrides,
-  };
-}
-
-vi.spyOn(Math, "random").mockReturnValue(0.5);
+import { makePokemon } from "./helpers.js";
 
 const testData: Pokemon[] = [
   makePokemon({
@@ -43,10 +17,33 @@ const testData: Pokemon[] = [
   makePokemon({ id: 252, name: "treecko", types: ["grass"], generation: 3 }),
 ];
 
+const SEED = 123;
 let store: PokemonStore;
 
 beforeEach(() => {
-  store = new PokemonStore(testData);
+  store = new PokemonStore(testData, { seed: SEED });
+});
+
+describe("deterministic shuffle", () => {
+  it("should produce the same order with the same seed", () => {
+    const store1 = new PokemonStore(testData, { seed: SEED });
+    const store2 = new PokemonStore(testData, { seed: SEED });
+
+    const ids1 = store1.getFeed({}).data.map((p) => p.id);
+    const ids2 = store2.getFeed({}).data.map((p) => p.id);
+
+    expect(ids1).toEqual(ids2);
+  });
+
+  it("should produce different order with different seeds", () => {
+    const store1 = new PokemonStore(testData, { seed: 1 });
+    const store2 = new PokemonStore(testData, { seed: 2 });
+
+    const ids1 = store1.getFeed({}).data.map((p) => p.id);
+    const ids2 = store2.getFeed({}).data.map((p) => p.id);
+
+    expect(ids1).not.toEqual(ids2);
+  });
 });
 
 describe("getById", () => {
@@ -110,12 +107,6 @@ describe("getFeed pagination", () => {
     const result = store.getFeed({ limit: 100 });
 
     expect(result.data.length).toEqual(7);
-  });
-
-  it("should clamp limit to min 1", () => {
-    const result = store.getFeed({ limit: 0 });
-
-    expect(result.data.length).toEqual(1);
   });
 
   it("should return empty data for invalid cursor", () => {
@@ -247,6 +238,13 @@ describe("getTags", () => {
         Number(tags.generations[i]!.name),
       );
     }
+  });
+
+  it("should return cached result (same reference)", () => {
+    const tags1 = store.getTags();
+    const tags2 = store.getTags();
+
+    expect(tags1).toBe(tags2);
   });
 });
 
