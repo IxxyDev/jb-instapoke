@@ -3,7 +3,7 @@ import type { PokemonStore } from "../store/pokemon-store.js";
 import { NotFoundError, ValidationError } from "../errors.js";
 
 export function pokemonRoutes(app: FastifyInstance, store: PokemonStore) {
-  app.get("/api/pokemon/:id", async (request) => {
+  app.get("/api/pokemon/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
     const numId = Number(id);
 
@@ -17,6 +17,7 @@ export function pokemonRoutes(app: FastifyInstance, store: PokemonStore) {
       throw new NotFoundError("Pokemon not found");
     }
 
+    reply.header("Cache-Control", "public, max-age=3600");
     return pokemon;
   });
 }

@@ -201,6 +201,54 @@ describe("getFeed filtering", () => {
     expect(result.data.length).toEqual(1);
     expect(result.data[0]!.name).toEqual("pikachu");
   });
+
+  it("should search by displayName", () => {
+    const data = [
+      makePokemon({
+        id: 122,
+        name: "mr-mime",
+        displayName: "Mr. Mime",
+        types: ["psychic"],
+        generation: 1,
+      }),
+      makePokemon({
+        id: 25,
+        name: "pikachu",
+        displayName: "Pikachu",
+        types: ["electric"],
+        generation: 1,
+      }),
+    ];
+    const s = new PokemonStore(data, { seed: SEED });
+    const result = s.getFeed({ q: "Mr. Mime" });
+
+    expect(result.data.length).toEqual(1);
+    expect(result.data[0]!.name).toEqual("mr-mime");
+  });
+
+  it("should search by description", () => {
+    const data = [
+      makePokemon({
+        id: 1,
+        name: "bulbasaur",
+        description: "A strange seed was planted on its back at birth.",
+        types: ["grass"],
+        generation: 1,
+      }),
+      makePokemon({
+        id: 4,
+        name: "charmander",
+        description: "The flame on its tail shows its life force.",
+        types: ["fire"],
+        generation: 1,
+      }),
+    ];
+    const s = new PokemonStore(data, { seed: SEED });
+    const result = s.getFeed({ q: "strange seed" });
+
+    expect(result.data.length).toEqual(1);
+    expect(result.data[0]!.name).toEqual("bulbasaur");
+  });
 });
 
 describe("getFeed backward pagination", () => {

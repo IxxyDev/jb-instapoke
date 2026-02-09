@@ -239,7 +239,12 @@ export class PokemonStore {
       const q = query.q.toLowerCase();
       const nameMatches = new Set(
         this.items
-          .filter((p) => p.name.toLowerCase().includes(q))
+          .filter(
+            (p) =>
+              p.name.toLowerCase().includes(q) ||
+              p.displayName.toLowerCase().includes(q) ||
+              p.description.toLowerCase().includes(q),
+          )
           .map((p) => p.id),
       );
       sets.push(nameMatches);

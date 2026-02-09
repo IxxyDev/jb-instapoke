@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import type { TagsResponse } from "@instapoke/shared";
 import { fetchFeed, fetchTags } from "../api/client";
@@ -50,7 +51,10 @@ export function useFeed() {
     staleTime: Infinity,
   });
 
-  const items = feed.data?.pages.flatMap((page) => page.data) ?? [];
+  const items = useMemo(
+    () => feed.data?.pages.flatMap((page) => page.data) ?? [],
+    [feed.data?.pages],
+  );
   const total = feed.data?.pages.at(-1)?.pagination.total ?? 0;
 
   const nextSentinelRef = useInfiniteScroll(

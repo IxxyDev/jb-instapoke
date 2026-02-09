@@ -6,7 +6,7 @@ const MAX_TAGS = 20;
 const MAX_QUERY_LENGTH = 100;
 
 export function feedRoutes(app: FastifyInstance, store: PokemonStore) {
-  app.get("/api/feed", async (request) => {
+  app.get("/api/feed", async (request, reply) => {
     const raw = request.query as Record<string, unknown>;
 
     const cursor = asString(raw["cursor"]);
@@ -16,7 +16,16 @@ export function feedRoutes(app: FastifyInstance, store: PokemonStore) {
     const generation = parseGeneration(asString(raw["generation"]));
     const q = parseQuery(asString(raw["q"]));
 
-    return store.getFeed({ cursor, direction, limit, tags, generation, q });
+    const result = store.getFeed({
+      cursor,
+      direction,
+      limit,
+      tags,
+      generation,
+      q,
+    });
+    reply.header("Cache-Control", "public, max-age=60");
+    return result;
   });
 }
 

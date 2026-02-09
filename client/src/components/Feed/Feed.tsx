@@ -3,11 +3,14 @@ import { useFeed } from "../../hooks/useFeed";
 import { SearchBar } from "../SearchBar/SearchBar";
 import { FilterBar } from "../FilterBar/FilterBar";
 import { FeedCard } from "../FeedCard/FeedCard";
+import { VirtualItem } from "../VirtualItem/VirtualItem";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { EmptyState } from "../EmptyState/EmptyState";
 import { ErrorState } from "../ErrorState/ErrorState";
 import { ErrorBoundary } from "../ErrorBoundary/ErrorBoundary";
 import styles from "./Feed.module.css";
+
+const CARD_ESTIMATED_HEIGHT = 600;
 
 export function Feed() {
   const queryClient = useQueryClient();
@@ -63,11 +66,12 @@ export function Feed() {
             </>
           )}
           {items.map((pokemon) => (
-            <FeedCard
+            <VirtualItem
               key={pokemon.id}
-              pokemon={pokemon}
-              onTagClick={filters.toggleTag}
-            />
+              estimatedHeight={CARD_ESTIMATED_HEIGHT}
+            >
+              <FeedCard pokemon={pokemon} onTagClick={filters.toggleTag} />
+            </VirtualItem>
           ))}
           {(isLoading || isFetchingNextPage) && (
             <>

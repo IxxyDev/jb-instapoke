@@ -1,4 +1,4 @@
-import { memo, useState, useCallback, useEffect } from "react";
+import { memo, useState, useCallback, useRef } from "react";
 import styles from "./LazyImage.module.css";
 
 type ImageStatus = "loading" | "loaded" | "error";
@@ -17,10 +17,14 @@ export const LazyImage = memo(function LazyImage({
   height,
 }: LazyImageProps) {
   const [status, setStatus] = useState<ImageStatus>("loading");
+  const prevSrc = useRef(src);
 
-  useEffect(() => {
-    setStatus("loading");
-  }, [src]);
+  if (prevSrc.current !== src) {
+    prevSrc.current = src;
+    if (status !== "loading") {
+      setStatus("loading");
+    }
+  }
 
   const onLoad = useCallback(() => setStatus("loaded"), []);
   const onError = useCallback(() => setStatus("error"), []);

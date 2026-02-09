@@ -32,7 +32,7 @@ async function fetchApi<T>(
     let message = `API error: ${res.status}`;
     try {
       const body = await res.json();
-      if (body.message) message = body.message;
+      if (body.error) message = body.error;
     } catch {
       // response body is not JSON, keep generic message
     }
