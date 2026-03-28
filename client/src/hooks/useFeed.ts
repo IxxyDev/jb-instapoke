@@ -50,7 +50,7 @@ export function useFeed() {
     queryKey: ["tags"],
     queryFn: async ({ signal }) => {
       const { data, error } = await api.GET("/api/tags", { signal });
-      if (error) throw new Error(error.error ?? "Failed to fetch tags");
+      if (error) throw new Error("Failed to fetch tags");
       return data;
     },
     staleTime: Infinity,

@@ -1,4 +1,4 @@
-import { useQueryStates, parseAsString, createParser } from "nuqs";
+import { createParser, parseAsString, useQueryStates } from "nuqs";
 import { useCallback } from "react";
 
 const commaSeparatedStrings = createParser({

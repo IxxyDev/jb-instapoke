@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { createElement, type ReactNode } from "react";
-import { renderHook, act } from "@testing-library/react";
+
+import { act, renderHook } from "@testing-library/react";
 import { NuqsTestingAdapter } from "nuqs/adapters/testing";
+import { createElement, type ReactNode } from "react";
 import { useFilterParams } from "../useFilterParams";
 
 function wrapper({ children }: { children: ReactNode }) {
