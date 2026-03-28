@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Pokemon } from "@instapoke/shared";
 import { MAX_POKEMON_ID } from "@instapoke/shared";
+import type { Pokemon } from "../schemas/pokemon.js";
 import { transformPokemon } from "./transforms.js";
 import type { PokeApiPokemon, PokeApiSpecies } from "./types.js";
 

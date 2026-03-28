@@ -10,12 +10,7 @@ interface LazyImageProps {
   height: number;
 }
 
-export function LazyImage({
-  src,
-  alt,
-  width,
-  height,
-}: LazyImageProps) {
+export function LazyImage({ src, alt, width, height }: LazyImageProps) {
   const [status, setStatus] = useState<ImageStatus>("loading");
   const prevSrc = useRef(src);
 

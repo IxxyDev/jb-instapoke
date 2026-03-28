@@ -1,14 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import type {
-  FeedQuery,
-  PaginatedResponse,
-  Pokemon,
-  TagInfo,
-  TagsResponse,
-} from "@instapoke/shared";
 import { PAGE_SIZE_DEFAULT, PAGE_SIZE_MAX } from "@instapoke/shared";
+import type { FeedQuery } from "../schemas/feed.js";
+import type { PaginatedResponse, Pokemon } from "../schemas/pokemon.js";
+import type { TagInfo, TagsResponse } from "../schemas/tags.js";
 
 export interface PokemonStoreOptions {
   seed?: number;
@@ -35,7 +31,7 @@ export class PokemonStore {
     return this.byId.get(id);
   }
 
-  getFeed(query: FeedQuery): PaginatedResponse<Pokemon> {
+  getFeed(query: FeedQuery): PaginatedResponse {
     const limit = Math.min(query.limit ?? PAGE_SIZE_DEFAULT, PAGE_SIZE_MAX);
     const matchingIds = this.getMatchingIds(query);
     const direction = query.direction ?? "forward";
@@ -51,7 +47,7 @@ export class PokemonStore {
     cursor: string | undefined,
     limit: number,
     matchingIds: Set<number> | null,
-  ): PaginatedResponse<Pokemon> {
+  ): PaginatedResponse {
     const startIndex = this.resolveCursorForward(cursor);
 
     const results: Pokemon[] = [];
@@ -87,7 +83,7 @@ export class PokemonStore {
     cursor: string | undefined,
     limit: number,
     matchingIds: Set<number> | null,
-  ): PaginatedResponse<Pokemon> {
+  ): PaginatedResponse {
     const endIndex = this.resolveCursorBackward(cursor);
 
     const results: Pokemon[] = [];

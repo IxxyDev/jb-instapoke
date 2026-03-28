@@ -1,5 +1,5 @@
-import type { Pokemon } from "@instapoke/shared";
 import { expect, test } from "@playwright/experimental-ct-react";
+import type { Pokemon } from "../../api/types";
 import { FeedCard } from "./FeedCard";
 
 const pokemon: Pokemon = {

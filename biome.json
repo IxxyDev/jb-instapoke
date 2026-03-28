@@ -33,7 +33,8 @@
     }
   },
   "files": {
-    "includes": ["**/*.ts", "**/*.tsx", "**/*.json", "**/*.css"]
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.json", "**/*.css"],
+    "experimentalScannerIgnores": ["client/src/api/schema.d.ts"]
   },
   "assist": {
     "enabled": true,

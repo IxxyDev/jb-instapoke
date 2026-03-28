@@ -1,4 +1,4 @@
-import type { Pokemon } from "@instapoke/shared";
+import type { Pokemon } from "../../api/types";
 
 import { LazyImage } from "../LazyImage/LazyImage";
 import { TagChip } from "../TagChip/TagChip";
@@ -20,10 +20,7 @@ const STAT_LABELS: Record<string, string> = {
 
 const MAX_STAT = 255;
 
-export function FeedCard({
-  pokemon,
-  onTagClick,
-}: FeedCardProps) {
+export function FeedCard({ pokemon, onTagClick }: FeedCardProps) {
   return (
     <article className={styles.card} aria-label={pokemon.displayName}>
       <LazyImage

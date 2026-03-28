@@ -1,4 +1,4 @@
-import type { Pokemon } from "@instapoke/shared";
+import type { Pokemon } from "../schemas/pokemon.js";
 
 export function makePokemon(
   overrides: Partial<Pokemon> & { id: number },

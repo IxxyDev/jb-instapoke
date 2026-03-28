@@ -1,4 +1,4 @@
-import type { Pokemon } from "@instapoke/shared";
+import type { Pokemon } from "../schemas/pokemon.js";
 import { PokemonStore } from "../store/pokemon-store.js";
 import { makePokemon } from "./helpers.js";
 

@@ -1,5 +1,5 @@
-import type { Pokemon, PokemonStats } from "@instapoke/shared";
 import { SPRITE_BASE_URL } from "@instapoke/shared";
+import type { Pokemon, PokemonStats } from "../schemas/pokemon.js";
 import type { PokeApiPokemon, PokeApiSpecies } from "./types.js";
 
 export function parseGeneration(name: string): number {

@@ -1,4 +1,4 @@
-import type { TagsResponse } from "@instapoke/shared";
+import type { TagsResponse } from "../../api/types";
 import { TagChip } from "../TagChip/TagChip";
 import styles from "./FilterBar.module.css";
 

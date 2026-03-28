@@ -1,7 +1,7 @@
-import type { TagsResponse } from "@instapoke/shared";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { fetchFeed, fetchTags } from "../api/client";
+import { api } from "../api/client";
+import type { TagsResponse } from "../api/types";
 import { useFilterParams } from "./useFilterParams";
 import { useInfiniteScroll } from "./useInfiniteScroll";
 
@@ -15,17 +15,22 @@ export function useFeed() {
 
   const feed = useInfiniteQuery({
     queryKey: ["feed", q, tags, generation, cursor],
-    queryFn: ({ pageParam, signal }) =>
-      fetchFeed(
-        {
-          cursor: pageParam?.cursor,
-          direction: pageParam?.direction,
-          tags: tags.length ? tags : undefined,
-          generation: generation.length ? generation : undefined,
-          q: q || undefined,
+    queryFn: async ({ pageParam, signal }) => {
+      const { data, error } = await api.GET("/api/feed", {
+        params: {
+          query: {
+            cursor: pageParam?.cursor,
+            direction: pageParam?.direction,
+            tags: tags.length ? tags.join(",") : undefined,
+            generation: generation.length ? generation.join(",") : undefined,
+            q: q || undefined,
+          },
         },
         signal,
-      ),
+      });
+      if (error) throw new Error(error.error);
+      return data;
+    },
     initialPageParam: initialPageParam as
       | { cursor: string; direction: "forward" | "backward" }
       | undefined,
@@ -47,7 +52,11 @@ export function useFeed() {
 
   const tagsQuery = useQuery({
     queryKey: ["tags"],
-    queryFn: ({ signal }) => fetchTags(signal),
+    queryFn: async ({ signal }) => {
+      const { data, error } = await api.GET("/api/tags", { signal });
+      if (error) throw new Error("Failed to fetch tags");
+      return data;
+    },
     staleTime: Infinity,
   });
 
