@@ -1,5 +1,6 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
+import { ZodError } from "zod";
 import { AppError } from "./errors.js";
 import { feedRoutes } from "./routes/feed.js";
 import { pokemonRoutes } from "./routes/pokemon.js";
@@ -22,6 +23,10 @@ export async function buildApp(options: AppOptions = {}) {
   });
 
   app.setErrorHandler((error: unknown, _request, reply) => {
+    if (error instanceof ZodError) {
+      return reply.status(400).send({ error: error.issues[0].message });
+    }
+
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send({ error: error.message });
     }
