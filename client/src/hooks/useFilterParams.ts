@@ -1,92 +1,72 @@
-import { useCallback, useSyncExternalStore } from "react";
+import { useQueryStates, parseAsString, createParser } from "nuqs";
+import { useCallback } from "react";
 
-interface FilterParams {
-  q: string;
-  tags: string[];
-  generation: number[];
-  cursor: string;
-}
+const commaSeparatedStrings = createParser({
+  parse: (value: string) => value.split(",").filter(Boolean),
+  serialize: (value: string[]) => value.join(","),
+}).withDefault([]);
 
-let cachedSearch = "";
-let cachedSnapshot: FilterParams = {
-  q: "",
-  tags: [],
-  generation: [],
-  cursor: "",
+const commaSeparatedIntegers = createParser({
+  parse: (value: string) =>
+    value
+      .split(",")
+      .filter(Boolean)
+      .map(Number)
+      .filter((n) => !isNaN(n) && n >= 1),
+  serialize: (value: number[]) => value.join(","),
+}).withDefault([]);
+
+const filterConfig = {
+  q: parseAsString.withDefault(""),
+  tags: commaSeparatedStrings,
+  generation: commaSeparatedIntegers,
 };
 
-function getSnapshot(): FilterParams {
-  const search = window.location.search;
-  if (search === cachedSearch) return cachedSnapshot;
-
-  cachedSearch = search;
-  const params = new URLSearchParams(search);
-  cachedSnapshot = {
-    q: params.get("q") ?? "",
-    tags: params.get("tags")?.split(",").filter(Boolean) ?? [],
-    generation:
-      params
-        .get("generation")
-        ?.split(",")
-        .filter(Boolean)
-        .map(Number)
-        .filter((n) => !isNaN(n) && n >= 1) ?? [],
-    cursor: params.get("cursor") ?? "",
-  };
-  return cachedSnapshot;
-}
-
-function subscribe(callback: () => void): () => void {
-  window.addEventListener("popstate", callback);
-  return () => window.removeEventListener("popstate", callback);
-}
-
-function applyParams(next: FilterParams) {
-  const url = new URL(window.location.href);
-
-  if (next.q) url.searchParams.set("q", next.q);
-  else url.searchParams.delete("q");
-
-  if (next.tags.length) url.searchParams.set("tags", next.tags.join(","));
-  else url.searchParams.delete("tags");
-
-  if (next.generation.length)
-    url.searchParams.set("generation", next.generation.join(","));
-  else url.searchParams.delete("generation");
-
-  if (next.cursor) url.searchParams.set("cursor", next.cursor);
-  else url.searchParams.delete("cursor");
-
-  window.history.replaceState(null, "", url);
-  window.dispatchEvent(new PopStateEvent("popstate"));
-}
-
 export function useFilterParams() {
-  const params = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  const [params, setParams] = useQueryStates(filterConfig, {
+    history: "replace",
+  });
 
-  const setQuery = useCallback((q: string) => {
-    applyParams({ ...getSnapshot(), q, cursor: "" });
-  }, []);
+  const setQuery = useCallback(
+    (q: string) => {
+      setParams({ q });
+    },
+    [setParams],
+  );
 
-  const toggleTag = useCallback((tag: string) => {
-    const current = getSnapshot();
-    const tags = current.tags.includes(tag)
-      ? current.tags.filter((t) => t !== tag)
-      : [...current.tags, tag];
-    applyParams({ ...current, tags, cursor: "" });
-  }, []);
+  const toggleTag = useCallback(
+    (tag: string) => {
+      setParams((prev) => ({
+        tags: prev.tags.includes(tag)
+          ? prev.tags.filter((t) => t !== tag)
+          : [...prev.tags, tag],
+      }));
+    },
+    [setParams],
+  );
 
-  const toggleGeneration = useCallback((gen: number) => {
-    const current = getSnapshot();
-    const generation = current.generation.includes(gen)
-      ? current.generation.filter((g) => g !== gen)
-      : [...current.generation, gen];
-    applyParams({ ...current, generation, cursor: "" });
-  }, []);
+  const toggleGeneration = useCallback(
+    (gen: number) => {
+      setParams((prev) => ({
+        generation: prev.generation.includes(gen)
+          ? prev.generation.filter((g) => g !== gen)
+          : [...prev.generation, gen],
+      }));
+    },
+    [setParams],
+  );
 
   const clearFilters = useCallback(() => {
-    applyParams({ q: "", tags: [], generation: [], cursor: "" });
-  }, []);
+    setParams({ q: "", tags: [], generation: [] });
+  }, [setParams]);
 
-  return { ...params, setQuery, toggleTag, toggleGeneration, clearFilters };
+  return {
+    q: params.q,
+    tags: params.tags,
+    generation: params.generation,
+    setQuery,
+    toggleTag,
+    toggleGeneration,
+    clearFilters,
+  };
 }

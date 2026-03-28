@@ -7,14 +7,10 @@ import { useInfiniteScroll } from "./useInfiniteScroll";
 
 export function useFeed() {
   const filters = useFilterParams();
-  const { q, tags, generation, cursor } = filters;
-
-  const initialPageParam = cursor
-    ? { cursor, direction: "forward" as const }
-    : undefined;
+  const { q, tags, generation } = filters;
 
   const feed = useInfiniteQuery({
-    queryKey: ["feed", q, tags, generation, cursor],
+    queryKey: ["feed", q, tags, generation],
     queryFn: async ({ pageParam, signal }) => {
       const { data, error } = await api.GET("/api/feed", {
         params: {
@@ -31,7 +27,7 @@ export function useFeed() {
       if (error) throw new Error(error.error);
       return data;
     },
-    initialPageParam: initialPageParam as
+    initialPageParam: undefined as
       | { cursor: string; direction: "forward" | "backward" }
       | undefined,
     getNextPageParam: (lastPage) =>
