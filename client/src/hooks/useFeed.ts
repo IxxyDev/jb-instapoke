@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import type { TagsResponse } from "@instapoke/shared";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { fetchFeed, fetchTags } from "../api/client";
 import { useFilterParams } from "./useFilterParams";
 import { useInfiniteScroll } from "./useInfiniteScroll";

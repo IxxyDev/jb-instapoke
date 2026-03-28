@@ -1,4 +1,4 @@
-import { useSyncExternalStore, useCallback } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 interface FilterParams {
   q: string;

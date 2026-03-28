@@ -1,4 +1,4 @@
-import { memo, useState, useCallback, useRef } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import styles from "./LazyImage.module.css";
 
 type ImageStatus = "loading" | "loaded" | "error";
@@ -35,7 +35,7 @@ export const LazyImage = memo(function LazyImage({
       style={{ aspectRatio: `${width} / ${height}` }}
     >
       {status === "error" ? (
-        <div className={styles.placeholder} aria-label={alt} />
+        <div className={styles.placeholder} role="img" aria-label={alt} />
       ) : (
         <img
           src={src}

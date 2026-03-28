@@ -1,5 +1,5 @@
-import { memo } from "react";
 import type { Pokemon } from "@instapoke/shared";
+import { memo } from "react";
 import { LazyImage } from "../LazyImage/LazyImage";
 import { TagChip } from "../TagChip/TagChip";
 import styles from "./FeedCard.module.css";

@@ -1,11 +1,11 @@
+import { SPRITE_BASE_URL } from "@instapoke/shared";
 import {
+  capitalize,
   parseGeneration,
   parseStats,
-  capitalize,
   transformPokemon,
 } from "../seed/transforms.js";
 import type { PokeApiPokemon, PokeApiSpecies } from "../seed/types.js";
-import { SPRITE_BASE_URL } from "@instapoke/shared";
 
 describe("parseGeneration", () => {
   it("should parse all 9 generations", () => {

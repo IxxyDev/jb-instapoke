@@ -1,9 +1,9 @@
-import { writeFileSync, mkdirSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { MAX_POKEMON_ID } from "@instapoke/shared";
 import type { Pokemon } from "@instapoke/shared";
-import type { PokeApiPokemon, PokeApiSpecies } from "./types.js";
+import { MAX_POKEMON_ID } from "@instapoke/shared";
 import { transformPokemon } from "./transforms.js";
+import type { PokeApiPokemon, PokeApiSpecies } from "./types.js";
 
 const BATCH_SIZE = 10;
 const BATCH_DELAY_MS = 200;

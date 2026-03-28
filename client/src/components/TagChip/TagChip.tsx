@@ -1,5 +1,5 @@
-import { memo } from "react";
 import { TYPE_COLORS } from "@instapoke/shared";
+import { memo } from "react";
 import styles from "./TagChip.module.css";
 
 interface TagChipProps {
@@ -19,6 +19,7 @@ export const TagChip = memo(function TagChip({
 
   return (
     <button
+      type="button"
       className={`${styles.chip} ${active ? styles.active : ""}`}
       style={{ "--chip-color": color } as React.CSSProperties}
       aria-pressed={active}

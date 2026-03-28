@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/experimental-ct-react";
+import { expect, test } from "@playwright/experimental-ct-react";
 import { ErrorState } from "./ErrorState";
 
 test("shows error message and retry button", async ({ mount }) => {

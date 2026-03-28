@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { useFilterParams } from "../useFilterParams";
 
 function setURL(search: string) {

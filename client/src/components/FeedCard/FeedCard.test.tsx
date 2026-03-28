@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/experimental-ct-react";
-import { FeedCard } from "./FeedCard";
 import type { Pokemon } from "@instapoke/shared";
+import { expect, test } from "@playwright/experimental-ct-react";
+import { FeedCard } from "./FeedCard";
 
 const pokemon: Pokemon = {
   id: 25,

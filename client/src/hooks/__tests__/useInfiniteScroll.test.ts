@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { useInfiniteScroll } from "../useInfiniteScroll";
 
 type ObserverCallback = (entries: Partial<IntersectionObserverEntry>[]) => void;

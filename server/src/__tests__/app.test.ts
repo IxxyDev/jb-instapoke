@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import { PokemonStore } from "../store/pokemon-store.js";
 import { buildApp } from "../app.js";
+import { PokemonStore } from "../store/pokemon-store.js";
 import { makePokemon } from "./helpers.js";
 
 const testData = [

@@ -221,7 +221,9 @@ export class PokemonStore {
       const union = new Set<number>();
       for (const tag of query.tags) {
         const ids = this.byType.get(tag);
-        if (ids) ids.forEach((id) => union.add(id));
+        if (ids) {
+          for (const id of ids) union.add(id);
+        }
       }
       sets.push(union);
     }
@@ -230,7 +232,9 @@ export class PokemonStore {
       const union = new Set<number>();
       for (const gen of query.generation) {
         const ids = this.byGeneration.get(gen);
-        if (ids) ids.forEach((id) => union.add(id));
+        if (ids) {
+          for (const id of ids) union.add(id);
+        }
       }
       sets.push(union);
     }

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import type { PokemonStore } from "../store/pokemon-store.js";
 import { ValidationError } from "../errors.js";
+import type { PokemonStore } from "../store/pokemon-store.js";
 
 const MAX_TAGS = 20;
 const MAX_QUERY_LENGTH = 100;

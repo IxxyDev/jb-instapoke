@@ -1,12 +1,11 @@
-import Fastify from "fastify";
 import cors from "@fastify/cors";
-
+import Fastify from "fastify";
+import { AppError } from "./errors.js";
 import { feedRoutes } from "./routes/feed.js";
-import { tagsRoutes } from "./routes/tags.js";
 import { pokemonRoutes } from "./routes/pokemon.js";
+import { tagsRoutes } from "./routes/tags.js";
 import type { PokemonStore } from "./store/pokemon-store.js";
 import { loadStore } from "./store/pokemon-store.js";
-import { AppError } from "./errors.js";
 
 export interface AppOptions {
   store?: PokemonStore;

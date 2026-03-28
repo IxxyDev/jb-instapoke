@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TagChip } from "../TagChip/TagChip";
 import styles from "./SearchBar.module.css";
 

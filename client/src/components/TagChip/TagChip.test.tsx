@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/experimental-ct-react";
+import { expect, test } from "@playwright/experimental-ct-react";
 import { TagChip } from "./TagChip";
 
 test("renders label text", async ({ mount }) => {

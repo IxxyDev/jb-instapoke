@@ -11,7 +11,7 @@ export function ErrorState({ message, onRetry }: ErrorStateProps) {
       <p className={styles.title}>Something went wrong</p>
       <p className={styles.message}>{message}</p>
       {onRetry && (
-        <button className={styles.button} onClick={onRetry}>
+        <button type="button" className={styles.button} onClick={onRetry}>
           Retry
         </button>
       )}

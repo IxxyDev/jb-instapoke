@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import type { PokemonStore } from "../store/pokemon-store.js";
 import { NotFoundError, ValidationError } from "../errors.js";
+import type { PokemonStore } from "../store/pokemon-store.js";
 
 export function pokemonRoutes(app: FastifyInstance, store: PokemonStore) {
   app.get("/api/pokemon/:id", async (request, reply) => {

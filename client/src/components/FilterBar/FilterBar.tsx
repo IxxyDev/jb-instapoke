@@ -20,7 +20,7 @@ export function FilterBar({
   if (!tags) return null;
 
   return (
-    <div className={styles.container} role="group" aria-label="Filters">
+    <fieldset className={styles.container} aria-label="Filters">
       <div className={styles.scroll}>
         {tags.types.map((t) => (
           <TagChip
@@ -44,6 +44,6 @@ export function FilterBar({
           );
         })}
       </div>
-    </div>
+    </fieldset>
   );
 }

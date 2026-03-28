@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/experimental-ct-react";
+import { expect, test } from "@playwright/experimental-ct-react";
 import { Skeleton } from "./Skeleton";
 
 test("skeleton is hidden from assistive technologies", async ({ mount }) => {
