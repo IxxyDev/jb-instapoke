@@ -1,4 +1,4 @@
-import "./styles/reset.css";
+import "modern-normalize";
 import "./styles/variables.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import styles from "./App.module.css";
