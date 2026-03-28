@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import styles from "./LazyImage.module.css";
 
 type ImageStatus = "loading" | "loaded" | "error";
@@ -10,7 +10,7 @@ interface LazyImageProps {
   height: number;
 }
 
-export const LazyImage = memo(function LazyImage({
+export function LazyImage({
   src,
   alt,
   width,
@@ -51,4 +51,4 @@ export const LazyImage = memo(function LazyImage({
       )}
     </div>
   );
-});
+}

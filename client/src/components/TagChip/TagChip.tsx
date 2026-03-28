@@ -1,5 +1,5 @@
 import { TYPE_COLORS } from "@instapoke/shared";
-import { memo } from "react";
+
 import styles from "./TagChip.module.css";
 
 interface TagChipProps {
@@ -9,7 +9,7 @@ interface TagChipProps {
   onClick?: () => void;
 }
 
-export const TagChip = memo(function TagChip({
+export function TagChip({
   label,
   name,
   active = false,
@@ -28,4 +28,4 @@ export const TagChip = memo(function TagChip({
       {label}
     </button>
   );
-});
+}

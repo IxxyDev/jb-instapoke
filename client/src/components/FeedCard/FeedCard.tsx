@@ -1,5 +1,5 @@
 import type { Pokemon } from "@instapoke/shared";
-import { memo } from "react";
+
 import { LazyImage } from "../LazyImage/LazyImage";
 import { TagChip } from "../TagChip/TagChip";
 import styles from "./FeedCard.module.css";
@@ -20,7 +20,7 @@ const STAT_LABELS: Record<string, string> = {
 
 const MAX_STAT = 255;
 
-export const FeedCard = memo(function FeedCard({
+export function FeedCard({
   pokemon,
   onTagClick,
 }: FeedCardProps) {
@@ -68,4 +68,4 @@ export const FeedCard = memo(function FeedCard({
       </div>
     </article>
   );
-});
+}
