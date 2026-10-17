@@ -5,9 +5,9 @@ Instagram-style Pokemon feed built with React 19 + Fastify.
 ## Quick Start
 
 ```sh
-npm install
-npm run seed
-npm run dev
+pnpm install
+pnpm seed
+pnpm dev
 ```
 
 - Client: http://localhost:5173

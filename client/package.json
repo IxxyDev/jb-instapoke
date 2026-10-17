@@ -12,7 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@instapoke/shared": "^1.0.0",
+    "@instapoke/shared": "workspace:^",
     "@tanstack/react-query": "^5.90.20",
     "modern-normalize": "^3.0.1",
     "nuqs": "^2.8.9",
